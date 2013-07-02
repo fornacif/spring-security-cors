@@ -1,0 +1,116 @@
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js">
+	
+</script>
+<body>
+	<h2>Test Rest Security</h2>
+	<form onsubmit="return false">
+		<label>Login:</label>
+		<input type="text" id="login" />
+		<label>Password:</label>
+		<input type="password" id="password" />
+		<button id="loginButton">Login</button>
+		<button id="logoutButton">Logout</button>
+	</form>
+	<div id="resultLogin"></div>
+	<hr />
+	<form onsubmit="return false">
+		<input type="text" id="value" />
+		<button id="createButton">Create</button>
+	</form>
+	<div id="resultCreate"></div>
+	<script type="text/javascript">
+		$.support.cors = true;
+		
+		$("#loginButton").click(function() {
+			$.ajax({
+				type: "POST",
+				url : "http://localhost:8080/spring-security-cors/spring/login",
+				data: {j_username: $("#login").val(), j_password: $("#password").val()},
+				success: loginSuccess,
+				error: loginFailed,
+				xhrFields: {
+			       withCredentials: true
+			    }
+			});
+		});
+		
+		$("#logoutButton").click(function() {
+			$.ajax({
+				type: "POST",
+				url : "http://localhost:8080/spring-security-cors/spring/logout",
+				success: logoutSuccess,
+				error: logoutFailed,
+				xhrFields: {
+			       withCredentials: true
+			    }
+			});
+		});
+		
+		$("#createButton").click(function() {
+			$.ajax({
+				headers: { 
+			        'Cache-Control' : "no-cache, must-revalidate"
+			    },
+				type: "POST",
+				url : "http://localhost:8080/spring-security-cors/services/test",
+				data: '{"value": "' + $("#value").val() + '"}',
+				dataType : "json",
+				contentType: "application/json",
+				success: postSuccess,
+				error: postFailed,
+				xhrFields: {
+			       withCredentials: true
+			    }
+			});		
+		});
+		
+		function loginSuccess(data) {
+			$("#login").val("");
+			$("#password").val("");
+			$("#resultLogin").html("login success");
+		};
+
+		function loginFailed(jqXHR, textStatus) {
+			$("#resultLogin").html("login " + textStatus);
+		};
+		
+		function logoutSuccess(data) {
+			$("#resultLogin").html("logout success");
+		};
+
+		function logoutFailed(jqXHR, textStatus) {
+			$("#resultLogin").html(textStatus);
+		};
+
+		function postSuccess(data) {
+			$.ajax({
+				type: "GET",
+				url : "http://localhost:8080/spring-security-cors/services/test",
+				dataType : "json",
+				contentType: "application/json",
+				success: getSuccess,
+				error: getFailed,
+				cache: false,
+				xhrFields: {
+			       withCredentials: true
+			    }
+			});
+		};
+		
+		function postFailed(jqXHR, textStatus) {
+			$("#resultCreate").html(textStatus);
+		};
+		
+		function getSuccess(data) {
+			$("#resultCreate").html(data.value);
+		};
+
+		function getFailed(jqXHR, textStatus) {
+			$("#resultCreate").html(textStatus);
+		};
+
+	</script>
+</body>
+</html>
