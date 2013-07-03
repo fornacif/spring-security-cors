@@ -14,13 +14,17 @@ public class CorsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        response.addHeader("Access-Control-Allow-Origin", "http://localhost:8081");
-        response.addHeader("Access-Control-Allow-Credentials", "true");
-        if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
-            // CORS "pre-flight" request
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.addHeader("Access-Control-Allow-Headers", "Accept, Origin, Authorization, Cache-Control, Content-Type");        
-            response.addHeader("Access-Control-Max-Age", "1728000");
+        String allowedOrigins = "http://localhost:8080, http://localhost:8081";
+        String origin = request.getHeader("Origin");
+        if (origin != null && allowedOrigins.contains(origin)) {   
+            response.addHeader("Access-Control-Allow-Origin", origin);
+            response.addHeader("Access-Control-Allow-Credentials", "true");
+            if (request.getHeader("Access-Control-Request-Method") != null && "OPTIONS".equals(request.getMethod())) {
+                // CORS "pre-flight" request
+                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+                response.addHeader("Access-Control-Allow-Headers", "Accept, Origin, Authorization, Cache-Control, Content-Type");        
+                response.addHeader("Access-Control-Max-Age", "1728000");
+            }
         }
         filterChain.doFilter(request, response);
     }
