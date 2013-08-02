@@ -11,9 +11,9 @@ import javax.ws.rs.core.MediaType;
 @Consumes({ MediaType.APPLICATION_JSON })
 @Produces({ MediaType.APPLICATION_JSON })
 public interface TestService {
-	@GET
-	public Model getModel();
+    @GET
+    public Model getModel();
 
-	@POST
-	public void createModel(Model model);
+    @POST
+    public void createModel(Model model);
 }

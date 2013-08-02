@@ -1,19 +1,23 @@
 package com.fornacif.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestServiceImpl implements TestService {
 
-	private Model model;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestServiceImpl.class);
 
-	@Override
-	public Model getModel() {
-		return model;
-	}
+    private Model model;
 
-	@Override
-	public void createModel(Model model) {
-		System.out.println("creating model with value " + model.getValue());
-		this.model = model;
-	}
+    @Override
+    public Model getModel() {
+        return model;
+    }
+
+    @Override
+    public void createModel(Model model) {
+        LOGGER.info("creating model with value {}", model.getValue());
+        this.model = model;
+    }
 
 }
